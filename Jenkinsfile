@@ -9,7 +9,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/sebastianncraciun/SQMA_Craciun_Sebastian'
+                git branch: 'main', url: 'https://github.com/sebastianncraciun/SQMA_Craciun_Sebastian.git'
             }
         }
         stage('Setup Environment') {
@@ -25,15 +25,15 @@ pipeline {
         stage('Run Tests') {
             steps {
                 script {
-                    sh "./venv/bin/python -m unittest discover -s tests -p tests/${params.TEST_CASE}.py"
+                    sh "./venv/bin/python -m xmlrunner discover -s tests -p '${params.TEST_CASE}.py' --output-file TEST-RESULTS.xml"
                 }
             }
         }
     }
     post {
         always {
-            archiveArtifacts artifacts: '**/*.log', allowEmptyArchive: true
-            junit '**/TEST-*.xml'
+            archiveArtifacts artifacts: 'TEST-RESULTS.xml', allowEmptyArchive: true
+            junit 'TEST-RESULTS.xml'
         }
     }
 }
